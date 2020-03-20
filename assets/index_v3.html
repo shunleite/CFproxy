@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>SNET BOX</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+  <base target="_blank">
+
+<!-- Loading Bootstrap -->
+<link href="__sys__/assets/css/bootstrap.css" rel="stylesheet">
+
+<!-- Edit CSS -->
+<link href="__sys__/assets/css/default.css" rel="stylesheet">
+<link href="__sys__/assets/css/main.css" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link href="__sys__/assets/css/font-awesome.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,900,700,600,300,200" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700" rel="stylesheet">
+<link rel="shortcut icon" href="__sys__/assets/images/favicon.ico">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+<![endif]-->
+  <style>
+    body {
+      padding: 0 0.5em;
+    }
+    .box {
+      margin-top: 1em;
+    }
+
+    #list a {
+      margin: 1em;
+    }
+select{  
+    width:200px;  
+    height:30px;  
+    appearance:none;  
+    -moz-appearance:none;  
+    -webkit-appearance:none;  
+    background: url("__sys__/assets/ico/2.png") no-repeat 170px center;  
+    background-size:10%;
+    font-size:16px;  
+    font-family:Microsoft YaHei;  
+    color:#ddd; 
+    outline:none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="page" class="page">
+
+	<!-- header -->
+	<header class="header8" id="home">
+
+		<nav role="navigation" class="navbar navbar-default">
+			<div class="container">
+			<div class="navbar-header">
+				<button data-target="#navbar-collapse-02" data-toggle="collapse" class="navbar-toggle" type="button">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand brand"><i class="fa fa-file-code-o"></i><span>SNET</span><span>Snetsz</span></a>
+			</div>
+
+			<div id="navbar-collapse-02" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active"><a class="scroll" href="#home">主页</a></li>
+					<li><a class="scroll" href="https://pan.shunleite.com">网盘</a></li>
+					<li><a class="scroll" href="https://bk.shunleite.com">博客</a></li>
+					<li><a class="scroll" href="https://www.shunleite.com">引导页</a></li>
+					<li><a class="scroll" href="http://tc.shunleite.com">图床</a></li>
+					<li><a class="scroll" class="nav-button" href="https://jq.qq.com/?_wv=1027&k=57GxCFm">Call me</a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+			</div>
+		</nav>
+
+		<div class="intro center-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+						<div class="email text-center"><i></i></div>
+						<p class="tag-line text-center">准备好了吗</p>
+						<h1 class="pull-stop text-center">开始你的极致之旅</h1>
+						<form class="login-reg subscribe text-center form-inline">
+							<div class="row margin-bottom-0">
+								<div class="col-md-12 col-sm-12">
+									<div class="form-group">
+										<input id="txtURL" class="form-control input-lg" type="text" placeholder="请输入你要搜索的内容和网站" autofocus/>
+									</div>
+									<button id="btnGo" type="button" class="btn btn-info button">开始通向</button>
+								</div>
+								<div class="col-md-12">
+									<div class="sign-tag m-auto"><p>关注我的站点 <a href="https://bk.shunleite.com">go</a></p></div>
+								</div>
+								<p></p>
+								<div class="box">
+									<span style="color:white">切换线路:</span>
+									<select id="selNode"></select>
+								</div>
+								<div class="box">
+								<a href='https://bk.shunleite.com'><img width=128 height=128 src='__sys__/assets/ico/ico256.png'></a>
+								</div>	
+								<div class="box" id="list">
+									
+								</div>
+							</div>
+						</form>
+					</div>
+
+				</div><!-- row -->
+
+			</div><!-- intro -->
+
+		</div><!-- container -->
+
+	</header><!-- header -->
+<script>
+    const PAGE_CONF_SET = 110
+    const PAGE_CONF_GET = 111
+
+    const SW_CONF_RETURN = 112
+    const SW_CONF_CHANGE = 113
+
+    const PAGE_READY_CHECK = 200
+    const SW_READY = 201
+
+    const sw = navigator.serviceWorker
+
+
+    sw.addEventListener('message', onSwMsg)
+    sendMsgToSw(PAGE_READY_CHECK)
+
+    btnGo.onclick = function() {
+      const text = txtURL.value.trim()
+      if (text) {
+        const url = './-----' + text
+        open(url, '_blank', 'noopener,noreferrer')
+      }
+    }
+    txtURL.onkeypress = function(e) {
+      if (e.keyCode === 13) {
+        btnGo.onclick()
+      }
+    }
+    txtURL.setSelectionRange(0, txtURL.value.length)
+
+
+    function onSwMsg(e) {
+      const [cmd, msg] = e.data
+
+      switch (cmd) {
+      case SW_CONF_RETURN:
+        conf = msg
+        showConf()
+        break
+
+      case SW_CONF_CHANGE:
+        conf = msg
+        updateSelected()
+        break
+
+      case SW_READY:
+        console.log('sw ready')
+        showIcons()
+        sendMsgToSw(PAGE_CONF_GET)
+        break
+      }
+    }
+
+    function onSwFail(err) {
+      txtURL.value = err
+    }
+
+    selNode.onchange = function() {
+      const item = this.options[this.selectedIndex]
+      const node = item.value
+      conf.node_default = node
+      sendMsgToSw(PAGE_CONF_SET, conf)
+    }
+
+    function sendMsgToSw(cmd, val) {
+      const ctl = sw.controller
+      if (!ctl) {
+        console.log('ctl is null')
+        return
+      }
+      ctl.postMessage([cmd, val])
+    }
+
+    const SITE_LIST = [
+	  ['google', ''],
+      ['youtube', ''],
+      ['twitter', 'twitter.com/google'],
+      ['flickr', ''],
+      ['quora', 'www.quora.com/topic/JavaScript-programming-language'],
+      ['twitch', 'www.twitch.tv/'],
+      ['reddit', ''],
+      ['wiki', 'zh.wikipedia.org/'],
+      ['gist', 'github.com/'],
+      ['facebook', 'facebook.com/Google/'],
+      ['blogger', ''],      
+    ]
+
+    function showIcons() {
+      list.innerHTML = SITE_LIST.map(v => {
+        let [id, url] = v
+        url = url || `www.${id}.com/`
+        return `\
+<a rel="noopener noreferrer" href=./-----https://${url}>\
+<img width=128 height=128 src=__sys__/assets/ico/${id}.png></a>`
+      }).join('')
+    }
+
+    function addNodeItem(id, text) {
+      const optEl = document.createElement('option')
+      optEl.id = '--' + id
+      optEl.text = text
+      optEl.value = id
+      selNode.appendChild(optEl)
+    }
+
+    function updateSelected() {
+      const id = conf.node_default
+      const item = document.getElementById('--' + id)
+      if (item) {
+        item.selected = true
+      } else {
+        console.warn('unknown node:', id)
+      }
+    }
+
+    function showConf() {
+      for (const [id, node] of Object.entries(conf.node_map)) {
+        if (!node.hidden) {
+          addNodeItem(id, node.label)
+        }
+      }
+      updateSelected()
+    }
+  </script>
+	
+
+<script type="text/javascript">document.write(unescape("%3Cspan id='cnzz_stat_icon_1278665043'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1278665043%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+<!--=== Load JS here for greater good ====-->
+<script src="__sys__/assets/js/jquery-1.8.3.min.js"></script>
+<script src="__sys__/assets/js/bootstrap.min.js"></script>
+<script src="__sys__/assets/js/isotope.pkgd.js"></script>
+<script src="__sys__/assets/js/jquery.countdown.min.js"></script>
+<script src="__sys__/assets/js/jquery.flexslider.js"></script>
+<script src="__sys__/assets/js/jquery.nivo.slider.pack.js"></script>
+<script src="__sys__/assets/js/portfolio-custom1.js"></script>
+<script src="__sys__/assets/js/portfolio-custom2.js"></script>
+<script src="__sys__/assets/js/main.js"></script>
+</body>
+</html>
