@@ -22,7 +22,7 @@ jsproxy_config({
     'demo-sg': {
       label: '新加坡节点',
       lines: {
-        'dl.shunleite.com': 1,
+        'cp.shunleite.com': 1,
       },
     },
     'mysite': {
@@ -36,11 +36,9 @@ jsproxy_config({
       label: '',
       hidden: true,
       lines: {
-        // 收费版（高权重）
+        // 收费版（高权重特殊时候启用）
         //'node-cfworker-2.etherdream.com': 4,
 
-        // 免费版（低权重，分摊一些成本）
-        // 每个账号每天 10 万次免费请求，但有频率限制
         //'b.007.workers.dev': 1,
         //'b.hehe.workers.dev': 1,
         //'b.lulu.workers.dev': 1,
